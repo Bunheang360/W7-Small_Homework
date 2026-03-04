@@ -6,6 +6,7 @@ import '../../../model/songs/song.dart';
 import '../../states/player_state.dart';
 import '../../states/settings_state.dart';
 import '../../theme/theme.dart';
+import '../../../ui/widgets/songs_tile.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
@@ -42,33 +43,13 @@ class FavoriteScreen extends StatelessWidget {
               itemBuilder: (context, index) => SongTile(
                 song: songs[index],
                 isPlaying: playerState.currentSong == songs[index],
+                onTap: () {
+                  playerState.start(songs[index]);
+                }
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SongTile extends StatelessWidget {
-  const SongTile({
-    super.key,
-    required this.song,
-    required this.isPlaying,
-  });
-
-  final Song song;
-  final bool isPlaying;
-
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(song.title),
-      trailing: Text(
-        isPlaying ? "Playing" : "",
-        style: TextStyle(color: Colors.amber),
       ),
     );
   }
