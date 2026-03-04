@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../model/songs/song.dart';
-import '../../../../ui/states/settings_state.dart';
 import '../../../../ui/theme/theme.dart';
-import '../../../../data/repositories/songs/song_repository.dart';
-import '../../../../ui/states/player_state.dart';
 import '../../../widgets/songs_tile.dart';
+import '../view_model/library_view_model.dart';
 
 
 class LibraryContent extends StatelessWidget {
@@ -13,18 +10,10 @@ class LibraryContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1- Read the globbal song repository
-    SongRepository songRepository = context.read<SongRepository>();
-    List<Song> songs = songRepository.fetchSongs();
-
-    // 2- Read the globbal settings state
-    AppSettingsState settingsState = context.read<AppSettingsState>();
-
-    // 3 - Watch the globbal player state
-    PlayerState playerState = context.watch<PlayerState>();
+    LibraryViewModel libraryViewModel = context.watch<LibraryViewModel>();
 
     return Container(
-      color: settingsState.theme.backgroundColor,
+      color: libraryViewModel.theme.backgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -32,15 +21,15 @@ class LibraryContent extends StatelessWidget {
           Text("Library", style: AppTextStyles.heading),
 
           SizedBox(height: 50),
-
+          
           Expanded(
             child: ListView.builder(
-              itemCount: songs.length,
+              itemCount: libraryViewModel.songs.length,
               itemBuilder: (context, index) => SongTile(
-                song: songs[index], 
-                isPlaying: playerState.currentSong == songs[index],
+                song: libraryViewModel.songs[index], 
+                isPlaying: libraryViewModel.isPlaying(libraryViewModel.songs[index]),
                 onTap: () {
-                  playerState.start(songs[index]);
+                  libraryViewModel.songPlay(libraryViewModel.songs[index]);
                 }
               ),
             ),
